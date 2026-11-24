@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#F7A94B" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="GeoOrigin" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <script>
+      (function () {
+        try {
+          var desc = Object.getOwnPropertyDescriptor(window, 'fetch');
+          if (desc && desc.get && !desc.set && desc.configurable) {
+            var currentFetch = desc.get;
+            Object.defineProperty(window, 'fetch', {
+              configurable: true,
+              enumerable: desc.enumerable,
+              get: function () {
+                return currentFetch.call(window);
+              },
+              set: function () {},
+            });
+          }
+        } catch (e) {}
+        window.addEventListener(
+          'error',
+          function (event) {
+            try {
+              var msg = String((event && event.message) || '');
+              var src = String((event && event.filename) || '');
+              if (
+                src.indexOf('chrome-extension://') === 0 &&
+                msg.indexOf('fetch') !== -1
+              ) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+              }
+            } catch (e) {}
+          },
+          true
+        );
+      })();
+    </script>
+    <title>GeoOrigin — Tägliches Geo-Trivia &amp; Erfindungen-Quiz</title>
+    <meta
+      name="description"
+      content="Spiele täglich GeoOrigin: Errate auf der Weltkarte, aus welchem Land 5 Erfindungen stammen – mit Distanz-Kompass, Geo-Trivia und Freundes-Duell."
+    />
+    <meta
+      name="keywords"
+      content="Geo Trivia, Geografie Quiz, GeoOrigin, Länder raten, Weltkarte Quiz, Erfindungen Quiz, Geography Trivia, Daily Origin Game"
+    />
+    <meta property="og:site_name" content="GeoOrigin" />
+    <meta property="og:title" content="GeoOrigin — Tägliches Geo-Trivia &amp; Erfindungen-Quiz" />
+    <meta
+      property="og:description"
+      content="Spiele täglich GeoOrigin: Errate auf der Weltkarte, aus welchem Land 5 Erfindungen stammen – mit Distanz-Kompass, Geo-Trivia und Freundes-Duell."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta
+      property="og:image:alt"
+      content="GeoOrigin — Tägliches Geo-Trivia &amp; Erfindungen-Quiz"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GeoOrigin — Tägliches Geo-Trivia &amp; Erfindungen-Quiz" />
+    <meta
+      name="twitter:description"
+      content="Spiele täglich GeoOrigin: Errate auf der Weltkarte, aus welchem Land 5 Erfindungen stammen – mit Distanz-Kompass, Geo-Trivia und Freundes-Duell."
+    />
+    <meta name="twitter:image" content="/og-image.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "GeoOrigin",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "All",
+        "inLanguage": ["de", "en"],
+        "description": "Tägliches Geo-Trivia & Weltkarte-Quiz: Errate in maximal 7 Versuchen das Ursprungsland von 5 Erfindungen aus aller Welt.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "EUR"
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('erfunden_wo_theme_v1');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (saved === 'dark' || (!saved && prefersDark)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
