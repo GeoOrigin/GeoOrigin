@@ -5,9 +5,11 @@ import path from 'path';
 import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
 
+const BASE_PATH = '/GeoOrigin/';
+
 export default defineConfig(() => {
   return {
-    base: '/GeoOrigin/',
+    base: BASE_PATH,
     plugins: [
       react(),
       tailwindcss(),
@@ -24,7 +26,7 @@ export default defineConfig(() => {
           'sitemap.xml',
         ],
         manifest: {
-          id: '/',
+          id: BASE_PATH,
           name: 'GeoOrigin — Geo-Trivia & Origin Quiz',
           short_name: 'GeoOrigin',
           description:
@@ -32,23 +34,23 @@ export default defineConfig(() => {
           theme_color: '#F7A94B',
           background_color: '#F7F5F0',
           display: 'standalone',
-          start_url: '/',
-          scope: '/',
+          start_url: BASE_PATH,
+          scope: BASE_PATH,
           icons: [
             {
-              src: '/pwa-192x192.png',
+              src: `${BASE_PATH}pwa-192x192.png`,
               sizes: '192x192',
               type: 'image/png',
               purpose: 'any',
             },
             {
-              src: '/pwa-512x512.png',
+              src: `${BASE_PATH}pwa-512x512.png`,
               sizes: '512x512',
               type: 'image/png',
               purpose: 'any',
             },
             {
-              src: '/pwa-maskable-512x512.png',
+              src: `${BASE_PATH}pwa-maskable-512x512.png`,
               sizes: '512x512',
               type: 'image/png',
               purpose: 'maskable',

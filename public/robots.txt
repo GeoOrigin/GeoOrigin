@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Disallow: /api/
+Sitemap: https://geoorigin.github.io/GeoOrigin/sitemap.xml

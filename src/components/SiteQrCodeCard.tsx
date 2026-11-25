@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import { Globe2 } from 'lucide-react';
 import { AppLanguage, getBrandName } from '../i18n/translations';
+import { PUBLIC_SITE_DISPLAY, PUBLIC_SITE_URL } from '../utils/siteUrl';
 
 interface SiteQrCodeCardProps {
   isDark?: boolean;
@@ -15,21 +16,14 @@ export const SiteQrCodeCard: React.FC<SiteQrCodeCardProps> = ({
   lang = 'de',
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [siteUrl, setSiteUrl] = useState<string>('https://geoorigin.app');
   const qrSize = compact ? 104 : 112;
   const brandName = getBrandName(lang);
 
   useEffect(() => {
-    const resolvedUrl =
-      typeof window !== 'undefined' && window.location.origin
-        ? window.location.origin
-        : 'https://geoorigin.app';
-    setSiteUrl(resolvedUrl);
-
     if (canvasRef.current) {
       QRCode.toCanvas(
         canvasRef.current,
-        resolvedUrl,
+        PUBLIC_SITE_URL,
         {
           width: qrSize,
           margin: 1,
@@ -56,9 +50,21 @@ export const SiteQrCodeCard: React.FC<SiteQrCodeCardProps> = ({
           <canvas
             ref={canvasRef}
             className="block h-[104px] w-[104px]"
-            aria-label={lang === 'en' ? `QR code for ${siteUrl}` : `QR-Code zu ${siteUrl}`}
+            aria-label={
+              lang === 'en'
+                ? `QR code for ${PUBLIC_SITE_URL}`
+                : `QR-Code zu ${PUBLIC_SITE_URL}`
+            }
           />
         </div>
+        <a
+          href={PUBLIC_SITE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 font-mono-tabular text-[10px] font-medium text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#16191D] dark:hover:text-white transition-colors break-all"
+        >
+          {PUBLIC_SITE_DISPLAY}
+        </a>
       </div>
     );
   }
@@ -73,9 +79,21 @@ export const SiteQrCodeCard: React.FC<SiteQrCodeCardProps> = ({
         <canvas
           ref={canvasRef}
           className="block h-[112px] w-[112px]"
-          aria-label={lang === 'en' ? `QR code for ${siteUrl}` : `QR-Code zu ${siteUrl}`}
+          aria-label={
+            lang === 'en'
+              ? `QR code for ${PUBLIC_SITE_URL}`
+              : `QR-Code zu ${PUBLIC_SITE_URL}`
+          }
         />
       </div>
+      <a
+        href={PUBLIC_SITE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-2.5 font-mono-tabular text-[11px] font-medium text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#16191D] dark:hover:text-white transition-colors break-all"
+      >
+        {PUBLIC_SITE_DISPLAY}
+      </a>
     </div>
   );
 };

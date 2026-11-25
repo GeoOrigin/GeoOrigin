@@ -548,43 +548,33 @@ async function startServer() {
     }
   });
 
-  const resolveBaseUrl = (req: Request): string => {
-    const envUrl = (process.env.APP_URL || '').trim().replace(/\/+$/, '');
-    if (envUrl && envUrl !== 'MY_APP_URL' && /^https?:\/\//i.test(envUrl)) {
-      return envUrl;
-    }
-    const protoHeader = (req.headers['x-forwarded-proto'] as string | undefined)
-      ?.split(',')[0]
-      ?.trim();
-    const proto = protoHeader || req.protocol || 'https';
-    const hostHeader = (req.headers['x-forwarded-host'] as string | undefined)
-      ?.split(',')[0]
-      ?.trim();
-    const host = hostHeader || req.get('host') || 'localhost:3000';
-    return `${proto}://${host}`;
-  };
+  const PUBLIC_ORIGIN = 'https://geoorigin.github.io/GeoOrigin';
 
-  app.get('/robots.txt', (req, res) => {
-    const baseUrl = resolveBaseUrl(req);
+  app.get('/robots.txt', (_req, res) => {
     res
       .type('text/plain; charset=utf-8')
-      .send(`User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${baseUrl}/sitemap.xml\n`);
+      .send(`User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${PUBLIC_ORIGIN}/sitemap.xml\n`);
   });
 
-  app.get('/sitemap.xml', (req, res) => {
-    const baseUrl = resolveBaseUrl(req);
+  app.get('/sitemap.xml', (_req, res) => {
     const lastmod = getBerlinToday();
     res.type('application/xml; charset=utf-8').send(
       `<?xml version="1.0" encoding="UTF-8"?>\n` +
         `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
         `  <url>\n` +
-        `    <loc>${baseUrl}/</loc>\n` +
+        `    <loc>${PUBLIC_ORIGIN}/</loc>\n` +
         `    <lastmod>${lastmod}</lastmod>\n` +
         `    <changefreq>daily</changefreq>\n` +
         `    <priority>1.0</priority>\n` +
         `  </url>\n` +
         `</urlset>\n`
     );
+  });
+
+  app.get('/', (req, res) => {
+    const qIdx = req.url.indexOf('?');
+    const qs = qIdx >= 0 ? req.url.slice(qIdx) : '';
+    res.redirect(302, `/GeoOrigin/${qs}`);
   });
 
   const isProd = process.env.NODE_ENV === 'production';
@@ -600,7 +590,7 @@ async function startServer() {
       appType: 'spa',
     });
     if (process.env.DISABLE_HMR === 'true') {
-      app.get('/@vite/client', async (_req, res, next) => {
+      app.get(['/@vite/client', '/GeoOrigin/@vite/client'], async (_req, res, next) => {
         try {
           const result = await vite.transformRequest('/@vite/client');
           if (!result || typeof result.code !== 'string') {
@@ -630,29 +620,9 @@ async function startServer() {
   } else {
     const distPath = path.join(__dirname, 'dist');
     const distIndexFile = path.join(distPath, 'index.html');
-    let cachedProdHtml: string | null = null;
-    try {
-      if (fs.existsSync(distIndexFile)) {
-        cachedProdHtml = fs.readFileSync(distIndexFile, 'utf8');
-      }
-    } catch {
-      cachedProdHtml = null;
-    }
-
-    app.use(express.static(distPath, { index: false }));
-    app.get('*', (req, res) => {
-      if (!cachedProdHtml) {
-        res.sendFile(distIndexFile);
-        return;
-      }
-      const baseUrl = resolveBaseUrl(req);
-      const htmlWithMeta = cachedProdHtml
-        .replace(/content="\/og-image\.png"/g, `content="${baseUrl}/og-image.png"`)
-        .replace(
-          '</head>',
-          `  <link rel="canonical" href="${baseUrl}/" />\n    <meta property="og:url" content="${baseUrl}/" />\n  </head>`
-        );
-      res.type('text/html; charset=utf-8').send(htmlWithMeta);
+    app.use('/GeoOrigin', express.static(distPath, { index: false }));
+    app.get(['/GeoOrigin', '/GeoOrigin/*'], (_req, res) => {
+      res.sendFile(distIndexFile);
     });
   }
 

@@ -1,4 +1,5 @@
 import { AppLanguage } from '../i18n/translations';
+import { PUBLIC_SITE_URL } from './siteUrl';
 
 export interface DuelChallenge {
   version: 1;
@@ -105,10 +106,7 @@ export function decodeDuelToken(token: string): DuelChallenge | null {
 
 export function buildDuelUrl(challenge: DuelChallenge): string {
   const token = encodeDuelToken(challenge);
-  if (typeof window === 'undefined') {
-    return `/?duel=${encodeURIComponent(token)}`;
-  }
-  const url = new URL(window.location.origin + window.location.pathname);
+  const url = new URL(PUBLIC_SITE_URL);
   url.searchParams.set('duel', token);
   return url.toString();
 }

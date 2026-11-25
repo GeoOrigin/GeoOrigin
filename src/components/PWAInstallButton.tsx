@@ -130,7 +130,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <img
-                  src="/apple-touch-icon.png"
+                  src={`${import.meta.env.BASE_URL}apple-touch-icon.png`}
                   alt={brandName}
                   className="h-10 w-10 rounded-xl border border-[#E6E2DA] dark:border-[#2C323E]"
                 />
